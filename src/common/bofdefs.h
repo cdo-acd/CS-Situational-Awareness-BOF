@@ -13,6 +13,7 @@
 #include <winnetwk.h>
 #include <wtsapi32.h>
 #include <shlwapi.h>
+#include <winbase.h>
 
 //KERNEL32
 #ifdef BOF
@@ -267,6 +268,8 @@ WINADVAPI WINBOOL WINAPI ADVAPI32$StartServiceA(SC_HANDLE hService,DWORD dwNumSe
 WINADVAPI WINBOOL WINAPI ADVAPI32$ControlService(SC_HANDLE hService,DWORD dwControl,LPSERVICE_STATUS lpServiceStatus);
 WINADVAPI WINBOOL WINAPI ADVAPI32$EnumDependentServicesA(SC_HANDLE hService,DWORD dwServiceState,LPENUM_SERVICE_STATUSA lpServices,DWORD cbBufSize,LPDWORD pcbBytesNeeded,LPDWORD lpServicesReturned);
 WINADVAPI LSTATUS WINAPI ADVAPI32$RegQueryInfoKeyA(HKEY hKey, LPSTR lpClass, LPDWORD lpcchClass, LPDWORD lpReserved, LPDWORD lpcSubKeys, LPDWORD lpcbMaxSubKeyLen, LPDWORD lpcbMaxClassLen, LPDWORD lpcValues, LPDWORD lpcbMaxValueNameLen, LPDWORD lpcbMaxValueLen, LPDWORD lpcbSecurityDescriptor, PFILETIME lpftLastWriteTime);
+WINADVAPI WINBOOL WINAPI ADVAPI32$LogonUserA(LPCSTR lpUsername, LPCSTR lpDomain, LPCSTR lpPassword, DWORD dwLogonType, DWORD dwLogonProvider, PHANDLE phToken);
+WINADVAPI WINBOOL WINAPI ADVAPI32$ImpersonateLoggedOnUser(HANDLE hToken);
 
 //NTDLL
 WINBASEAPI NTSTATUS NTAPI NTDLL$NtCreateFile(PHANDLE FileHandle,ACCESS_MASK DesiredAccess,POBJECT_ATTRIBUTES ObjectAttributes,PIO_STATUS_BLOCK IoStatusBlock,PLARGE_INTEGER AllocationSize,ULONG FileAttributes,ULONG ShareAccess,ULONG CreateDisposition,ULONG CreateOptions,PVOID EaBuffer,ULONG EaLength);
@@ -686,6 +689,8 @@ DECLSPEC_IMPORT WINBOOL WINAPI VERSION$VerQueryValueA(LPCVOID pBlock, LPCSTR lpS
 #define ADVAPI32$ControlService ControlService
 #define ADVAPI32$EnumDependentServicesA EnumDependentServicesA
 #define ADVAPI32$RegQueryInfoKeyA RegQueryInfoKeyA
+#define ADVAPI32$LogonUserA LogonUserA
+#define ADVAPI32$ImpersonateLoggedOnUser ImpersonateLoggedOnUser
 #define NTDLL$NtCreateFile NtCreateFile
 #define NTDLL$NtClose NtClose
 #define IMAGEHLP$ImageEnumerateCertificates ImageEnumerateCertificates
