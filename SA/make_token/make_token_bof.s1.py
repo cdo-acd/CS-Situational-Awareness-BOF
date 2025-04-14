@@ -6,7 +6,7 @@ from outflank_stage1.task.enums import BOFArgumentEncoding
 
 class MakeTokenBOF(BaseBOFTask):
     def __init__(self):
-        super().__init__("make_token_bof", base_binary_name="make_token")
+        super().__init__("make_token_bof", base_binary_name="make_token", non_threaded=True)
 
         self.parser.add_argument("username", help="The username to impersonate in DOMAIN\\username format.")
         self.parser.add_argument("password", help="The password for the corresponding user.")
