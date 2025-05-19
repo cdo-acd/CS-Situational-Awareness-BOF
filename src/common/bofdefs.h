@@ -14,7 +14,7 @@
 #include <wtsapi32.h>
 #include <shlwapi.h>
 #include <winbase.h>
-
+#include <ntsecapi.h>
 //KERNEL32
 #ifdef BOF
 WINBASEAPI void * WINAPI KERNEL32$VirtualAlloc (LPVOID lpAddress, SIZE_T dwSize, DWORD flAllocationType, DWORD flProtect);
@@ -117,6 +117,7 @@ WINBASEAPI void __cdecl MSVCRT$memset(void *dest, int c, size_t count);
 WINBASEAPI int __cdecl MSVCRT$sprintf(char *__stream, const char *__format, ...);
 WINBASEAPI int __cdecl MSVCRT$vsnprintf(char * __restrict__ d,size_t n,const char * __restrict__ format,va_list arg);
 WINBASEAPI int __cdecl MSVCRT$_snwprintf(wchar_t * __restrict__ _Dest,size_t _Count,const wchar_t * __restrict__ _Format,...);
+WINBASEAPI errno_t __cdecl MSVCRT$wcsncpy_s(wchar_t *_Dst, rsize_t _SizeInWords, const wchar_t *_Src, rsize_t _MaxCount);
 WINBASEAPI errno_t __cdecl MSVCRT$wcscpy_s(wchar_t *_Dst, rsize_t _DstSize, const wchar_t *_Src);
 WINBASEAPI size_t __cdecl MSVCRT$wcslen(const wchar_t *_Str);
 WINBASEAPI size_t __cdecl MSVCRT$wcstombs(char * __restrict__ _Dest,const wchar_t * __restrict__ _Source,size_t _MaxCount);
@@ -204,9 +205,12 @@ WINUSERAPI LRESULT WINAPI USER32$SendMessageA (HWND hwnd, UINT Msg, WPARAM wPara
 WINUSERAPI int WINAPI USER32$GetWindowTextA(HWND  hWnd, LPSTR lpString, int nMaxCount);
 WINUSERAPI int WINAPI USER32$GetClassNameA(HWND hWnd, LPTSTR lpClassName, int nMaxCount);
 WINUSERAPI BOOL WINAPI USER32$EnumChildWindows(HWND hWndParent, WNDENUMPROC lpEnumFunc, LPARAM lParam);
+WINBASEAPI WINBOOL WINAPI USER32$GetLastInputInfo (PLASTINPUTINFO plii);
 
 //secur32
 WINBASEAPI BOOLEAN WINAPI SECUR32$GetUserNameExA (int NameFormat, LPSTR lpNameBuffer, PULONG nSize);
+WINBASEAPI NTSTATUS NTAPI SECUR32$LsaGetLogonSessionData(PLUID LogonId,PSECURITY_LOGON_SESSION_DATA *ppLogonSessionData);
+WINBASEAPI NTSTATUS NTAPI SECUR32$LsaFreeReturnBuffer (PVOID Buffer);
 
 //shlwapi
 WINBASEAPI LPSTR WINAPI SHLWAPI$StrStrIA(LPCSTR lpFirst,LPCSTR lpSrch);
@@ -447,6 +451,7 @@ DECLSPEC_IMPORT WINBOOL WINAPI VERSION$VerQueryValueA(LPCVOID pBlock, LPCSTR lpS
 
 
 
+
 #else
 
 
@@ -510,6 +515,7 @@ DECLSPEC_IMPORT WINBOOL WINAPI VERSION$VerQueryValueA(LPCVOID pBlock, LPCSTR lpS
 #define KERNEL32$HeapReAlloc HeapReAlloc
 #define KERNEL32$HeapFree HeapFree
 #define MSVCRT$memset memset
+#define MSVCRT$_ultoa _ultoa
 #define KERNEL32$GlobalAlloc GlobalAlloc
 #define KERNEL32$GlobalFree GlobalFree
 #define KERNEL32$GetEnvironmentStrings GetEnvironmentStrings
@@ -548,6 +554,7 @@ DECLSPEC_IMPORT WINBOOL WINAPI VERSION$VerQueryValueA(LPCVOID pBlock, LPCSTR lpS
 #define MSVCRT$sprintf sprintf
 #define MSVCRT$vsnprintf vsnprintf
 #define MSVCRT$_snwprintf _snwprintf
+#define MSVCRT$wcsncpy_s wcsncpy_s
 #define MSVCRT$wcscpy_s wcscpy_s
 #define MSVCRT$wcslen wcslen
 #define MSVCRT$wcstombs wcstombs
@@ -612,6 +619,8 @@ DECLSPEC_IMPORT WINBOOL WINAPI VERSION$VerQueryValueA(LPCVOID pBlock, LPCSTR lpS
 #define NETAPI32$NetStatisticsGet NetStatisticsGet
 #define NETAPI32$NetApiBufferFree NetApiBufferFree
 #define NETAPI32$NetSessionEnum NetSessionEnum
+#define NETAPI32$NetGetAadJoinInformation NetGetAadJoinInformation
+#define NETAPI32$NetFreeAadJoinInformation NetFreeAadJoinInformation
 #define MPR$WNetOpenEnumW WNetOpenEnumW
 #define MPR$WNetEnumResourceW WNetEnumResourceW
 #define MPR$WNetCloseEnum WNetCloseEnum
@@ -631,6 +640,7 @@ DECLSPEC_IMPORT WINBOOL WINAPI VERSION$VerQueryValueA(LPCVOID pBlock, LPCSTR lpS
 #define USER32$GetWindowTextA GetWindowTextA
 #define USER32$GetClassNameA GetClassNameA
 #define USER32$EnumChildWindows EnumChildWindows
+#define USER32$GetLastInputInfo GetLastInputInfo
 #define SECUR32$GetUserNameExA  GetUserNameExA 
 #define SHLWAPI$StrStrIA StrStrIA
 #define SHLWAPI$SHFormatDateTimeA SHFormatDateTimeA
@@ -693,6 +703,7 @@ DECLSPEC_IMPORT WINBOOL WINAPI VERSION$VerQueryValueA(LPCVOID pBlock, LPCSTR lpS
 #define ADVAPI32$ImpersonateLoggedOnUser ImpersonateLoggedOnUser
 #define NTDLL$NtCreateFile NtCreateFile
 #define NTDLL$NtClose NtClose
+#define NTDLL$NtFsControlFile NtFsControlFile
 #define IMAGEHLP$ImageEnumerateCertificates ImageEnumerateCertificates
 #define IMAGEHLP$ImageGetCertificateHeader ImageGetCertificateHeader
 #define IMAGEHLP$ImageGetCertificateData ImageGetCertificateData
@@ -772,6 +783,10 @@ DECLSPEC_IMPORT WINBOOL WINAPI VERSION$VerQueryValueA(LPCVOID pBlock, LPCSTR lpS
 
 
 #define DBGHELP$MiniDumpWriteDump MiniDumpWriteDump
+
+#define SECUR32$LsaGetLogonSessionData LsaGetLogonSessionData
+#define SECUR32$LsaFreeReturnBuffer LsaFreeReturnBuffer
+
 #define WLDAP32$ldap_init ldap_init
 #define WLDAP32$ldap_bind_s ldap_bind_s
 #define WLDAP32$ldap_search_s ldap_search_s

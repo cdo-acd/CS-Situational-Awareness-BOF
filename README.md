@@ -29,8 +29,9 @@ Realistically, this could be compressed into a helper script, but those steps we
 |env| env| List process environment variables|
 |findLoadedModule| findLoadedModule [modulepart] [opt:procnamepart]| Find what processes \*modulepart\* are loaded into, optionally searching just \*procnamepart\*|
 |get_password_policy| get_password_policy [hostname]| Get target server or domain's configured password policy and lockouts|
+|get_session_info| get_session_info | prints out information related to the current users logon session |
 |ipconfig| ipconfig| List IPv4 address, hostname, and DNS server|
-|ldapsearch| ldapsearch [query] [opt: attribute] [opt: results_limit] [opt: DC hostname or IP] [opt: Distingished Name]| Execute LDAP searches (NOTE: specify *,ntsecuritydescriptor as attribute parameter if you want all attributes + base64 encoded ACL of the objects, this can then be resolved using BOFHound. Could possibly break pagination, although everything seemed fine during testing.)|
+|ldapsearch| ldapsearch <query> [--attributes] [--count] [--scope] [--hostname] [--dn] [--ldaps] | Execute LDAP searches (NOTE: specify *,ntsecuritydescriptor as attribute parameter if you want all attributes + base64 encoded ACL of the objects, this can then be resolved using BOFHound. Could possibly break pagination, although everything seemed fine during testing.)|
 |listdns| listdns| List DNS cache entries. Attempt to query and resolve each|
 |list_firewall_rules| list_firewall_rules| List Windows firewall rules|
 |listmods| listmods [opt: pid]| List process modules (DLL). Target current process if PID is empty. Complement to driversigs to determine if our process was injected by AV/EDR|
@@ -71,6 +72,7 @@ Realistically, this could be compressed into a helper script, but those steps we
 |schtasksquery| schtasksquery [opt: server] [taskpath]| Query the given task on the local or remote computer|
 |tasklist| tasklist [opt: server]| List running processes including PID, PPID, and ComandLine (uses wmi)|
 |uptime| uptime| List system boot time and how long it has been running|
+|useridletime| useridletime| Shows how long the user as been idle, displayed in seconds, minutes, hours and days.|
 |vssenum| vssenum [hostname] [opt:sharename]| Enumerate Shadow Copies on some Server 2012+ servers|
 |whoami| whoami| List whoami /all|
 |windowlist| windowlist [opt:all]| List visible windows in the current user session|
@@ -89,3 +91,7 @@ Precompiled BOF's are provided in this project and are compiled using a recent v
 
 ## System Support
 These BOF's are written with support for Windows Vista+ in mind. A new branch called [winxp_2003](https://github.com/trustedsec/CS-Situational-Awareness-BOF/tree/winxp_2003) has been created if you need to use the main set of BOF's on those older systems. This branch will remain in a less supported state. It will be functional, but not updated with every new push / feature that we may add.
+
+## Want to Learn More?
+If you've found these beacon object files helpful and want to write some of your own bofs following a similar style we invite you to check out our [Beacon Object File (BOF) Development](https://learn.trustedsec.com/courses/cd84409a-36af-4507-be2c-ca7ad1e9fd2d) course.  
+The course gives a breif overview of the history of beacon object files and then dives into a variety of challenge problems that aim to teach you how to leverage a variety of windows technologies when developing your own beacon object files.

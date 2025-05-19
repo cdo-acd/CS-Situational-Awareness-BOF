@@ -160,7 +160,7 @@ beacon_command_register(
 		--ldaps => use of ldaps
 
 Important - To add in ACLs so Bloodhound can draw relationships between objects (see external BofHound tool), add nTSecurityDescriptor in the attributes list, like so:
-ldapsearch <query> *,ntsecuritydescriptor ...
+ldapsearch <query> --attributes *,ntsecuritydescriptor ...
 Useful queries (queries are just an example, edit where necessary to make it OPSEC safe):
 
 - Kerberoastable:\n(&(samAccountType=805306368)(servicePrincipalName=*)(!samAccountName=krbtgt)(!(UserAccountControl:1.2.840.113556.1.4.803:=2)))
@@ -1289,6 +1289,17 @@ beacon_command_register(
 
 
 
+alias useridletime {
+	beacon_inline_execute($1, readbof($1, "useridletime", $null, "T1082"), "go", $null);
+}
+
+beacon_command_register(
+"useridletime",
+"Shows the user's idle time",
+"Usage: useridletime");
+
+
+
 alias enum_filter_driver{
 	local('$args $system');
 
@@ -1641,4 +1652,24 @@ beacon_command_register(
 	"Usage: regsession <opt: computername>
 	
 Note: Output from this BOF is compatible with bofhound"
+);
+
+alias aadjoininfo {
+	beacon_inline_execute($1, readbof($1, "aadjoininfo", $null, "T1082"), "go", $null);
+}
+
+beacon_command_register (
+	"aadjoininfo",
+	"Retrieve Azure AD/Entra ID join information",
+	"Usage: aadjoininfo"
+);
+
+alias get_session_info{
+	beacon_inline_execute($1, readbof($1, "get_session_info"), "go", $null);
+}
+
+beacon_command_register(
+	"get_session_info",
+	"Returns the auth package, logon server, and current session id of the user you are operating as",
+	"Usage: get_session_info"
 );
