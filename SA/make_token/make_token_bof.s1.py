@@ -17,11 +17,13 @@ class MakeTokenBOF(BaseBOFTask):
         parser_arguments = self.parser.parse_args(arguments)
 
         domain, username = parser_arguments.username.split('\\', 1)
+        password = parser_arguments.password
+        password = password.strip('"').strip('"')
 
         encoded_arguments = [
             (BOFArgumentEncoding.STR, domain),
             (BOFArgumentEncoding.STR, username),
-            (BOFArgumentEncoding.STR, parser_arguments.password),
+            (BOFArgumentEncoding.STR, password),
         ]
 
         return encoded_arguments
